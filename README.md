@@ -1,7 +1,7 @@
 # Trading-Algorithm
-Source code with different trading Algorithms aimed at cryptocurrency markets
+Source code with different trading Algorithms aimed at cryptocurrency markets.
 
-This is more of a training repository for learning different strategies in algorithmic trading
+This is more of a training repository for learning different strategies in algorithmic trading.
 
 Strategies include:
 + RSI Stock Price Algorithm
