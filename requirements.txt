@@ -1,0 +1,9 @@
+python-binance
+TA-Lib
+numpy
+websocket_client
+sqlalchemy
+mysql-connector-python
+pandas
+pymysql
+python-dotenv
