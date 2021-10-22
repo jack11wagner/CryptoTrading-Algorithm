@@ -73,7 +73,7 @@ last_position = pd.read_sql('Transactions', engine)
 
 if last_position['Type'].iloc[-1] == 'BUY':
     in_position = True
-    print('In current position at $', last_position['Price'].iloc[-1], ' with quantity of ', last_position['Quantity'].iloc[-1])
+    print('In current position at $',last_position['Price'].iloc[-1], 'with quantity of', last_position['Quantity'].iloc[-1])
 else:
     in_position = False
     print('Not currently in a position')
