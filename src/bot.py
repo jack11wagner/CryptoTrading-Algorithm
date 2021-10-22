@@ -11,7 +11,7 @@ load_dotenv()
 user, password, API_KEY, API_SECRET = os.getenv('USERNAME'), os.getenv('PASSWORD'), os.getenv('API_KEY'), os.getenv(
     'API_SECRET')
 
-conn = mysql.connector.connect(user='jacksonw', password='3083Creek',
+conn = mysql.connector.connect(user=user, password=password,
                                host='127.0.0.1', database='crypto_db')
 cursor = conn.cursor()
 engine = create_engine('mysql+pymysql://{}:{}@localhost/crypto_db'.format('jacksonw', '3083Creek'))
