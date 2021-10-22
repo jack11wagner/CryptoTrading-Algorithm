@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from binance.client import Client
 from binance.enums import *
 
+# loads env sensitive data
 load_dotenv()
 
 user, password, API_KEY, API_SECRET = os.getenv('USERNAME'), os.getenv('PASSWORD'), os.getenv('API_KEY'), os.getenv(
