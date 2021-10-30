@@ -6,6 +6,6 @@ This is more of a training repository for learning different strategies in algor
 Strategies include:
 + RSI Stock Price Algorithm
   - Currently functional for any cryptocurrency
-+ Basic Percentage Following
++ Top AltCoin Mover Stop Loss Method
 
 **Make sure to activate your virtual environment before trying to download requirements.txt**
