@@ -8,3 +8,5 @@ pandas
 pymysql
 python-dotenv
 pytz
+asyncio
+nest_asyncio

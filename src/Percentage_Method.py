@@ -21,11 +21,9 @@ engine = create_engine('mysql+pymysql://{}:{}@localhost/crypto_db'.format(user, 
 client = Client(API_KEY, API_SECRET, tld='us')
 
 # DEFINING PARAMETERS FOR TRADING
-RSI_PERIOD = 14
-RSI_OVERBOUGHT = 70
-RSI_OVERSOLD = 30
+PERCENTAGE_GAIN_TO_SELL = .025  # 2.5%
 TRADE_SYMBOL = 'BTCUSD'
-TRADE_QUANTITY = 0.00050
+TRADE_QUANTITY = 0.000384
 TIMEZONE = timezone('America/New_York')
 
 
@@ -37,11 +35,6 @@ def loadCandleCloses(symbol, Time, openprice, closeprice, change):
     df.Time = pd.to_datetime(df.Time, unit='ms')
     return df
 
-
-def loadRSI(Symbol, Time, RSI):
-    curr_time = datetime.datetime.now(TIMEZONE)
-    df = pd.DataFrame({'symbol': [Symbol], 'Time': [curr_time], 'LastRSI': [RSI]})
-    df.to_sql('RSI', engine, if_exists='append', index=False)
 
 
 def loadTransactions(order, side):
@@ -79,22 +72,26 @@ closes = list(close_data['Close_Price'])
 print(closes)
 
 # CHECKING SQL TO SEE IF LAST REGISTERED TRANSACTION WAS BUY OR SELL
-last_position = pd.read_sql('Transactions', engine)
-if last_position['Type'].iloc[-1] == 'BUY':
-    in_position = True
-    print('In current position at $', last_position['Price'].iloc[-1], 'with quantity of',
-          last_position['Quantity'].iloc[-1])
-    print('Current', TRADE_SYMBOL, 'price $', closes[-1])
-else:
-    in_position = False
-    print('Not currently in a position')
+# last_position = pd.read_sql('Transactions', engine)
+# if last_position['Type'].iloc[-1] == 'BUY':
+#     in_position = True
+#     print('In current position at $', last_position['Price'].iloc[-1], 'with quantity of',
+#           last_position['Quantity'].iloc[-1])
+#     POSITION_PRICE = float(last_position['Price'].iloc[-1])
+#     print('Current', TRADE_SYMBOL, 'price $', closes[-1])
+# else:
+in_position = False
+
+print('Not currently in a position')
 
 
 def on_message(ws, message):
     global closes
     global in_position
+    global POSITION_PRICE
     # print('received message')
     json_message = json.loads(message)
+    df = pd.read_json(message)
     # pprint.pprint(json_message)
     candle = json_message['k']
     # If True this means the candle is the last in the series aka last in minute interval
@@ -103,46 +100,32 @@ def on_message(ws, message):
     symbol, time, open, close = json_message['s'], candle['T'], candle['o'], candle['c']
     change = float(close) - float(open)
 
-
     if is_candle_closed:
+
+
         print('candle closed at {}'.format(float(close)))
 
         closes.append(float(close))
-        frame = loadCandleCloses(symbol, time, float(open), float(close), float(change))
-        print(frame)
-        frame.to_sql('CandleCloses', engine, if_exists='append', index=False)
-        # print('closes')
-        # print(closes)
+        # # frame = loadCandleCloses(symbol, time, float(open), float(close), float(change))
+        # print(frame)
+        # frame.to_sql('CandleCloses', engine, if_exists='append', index=False)
+        if in_position:
+            PERCENT_CHANGE = ((float(close)-POSITION_PRICE)/POSITION_PRICE)*100
+            print(PERCENT_CHANGE)
+            if PERCENT_CHANGE > PERCENTAGE_GAIN_TO_SELL:
+                pass
+                # order(SIDE_SELL, TRADE_QUANTITY, TRADE_SYMBOL)
+        else:
+            print(closes)
+            curr_close = float(close)
 
-        # makes sure number of closes recorded is greater than 14
-        if len(closes) > RSI_PERIOD:
-            np_closes = numpy.array(closes)
-            rsi = talib.RSI(np_closes, RSI_PERIOD)
-            print("all rsis calculated so far")
-            print(rsi)
-            last_rsi = rsi[-1]
-            loadRSI(symbol, time, last_rsi)
+            last_close = closes[-2]
+            print('Current Close:', curr_close, 'Last Close', last_close)
+            PERCENT_CHANGE = (float(close)- float(closes[-2])/float())
 
-            print('the current rsi is {}'.format(last_rsi))
 
-            if last_rsi > RSI_OVERBOUGHT:
-                if in_position:
-                    print('Overbought! SELL! SELL! SELL')
-                    order_succeeded = order(SIDE_SELL, TRADE_QUANTITY, TRADE_SYMBOL)
-                    if order_succeeded:
-                        in_position = False
-                else:
-                    print('It is overbought but we dont own any. Nothing to do.')
-
-            if last_rsi < RSI_OVERSOLD:
-                if in_position:
-                    print('It is oversold, but you own it, Nothing to do.')
-
-                else:
-                    print("Oversold! BUY! BUY BUY!")
-                    order_succeeded = order(SIDE_BUY, TRADE_QUANTITY, TRADE_SYMBOL)
-                    if order_succeeded:
-                        in_position = True
+def trendFollow(df, entry, exit):
+    pass
 
 
 def on_open(ws):
