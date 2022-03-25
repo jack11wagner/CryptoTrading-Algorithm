@@ -9,7 +9,7 @@ This is more of a training repository for learning different strategies in algor
 + Percentage Method
 
 ## Developers 
-- Visit [Setup](docs/dev_resources.md) for more information on how to setup the necessary dependencies to run the program
+- Visit [Setup](docs/developers.md) for more information on how to setup the necessary dependencies to run the program
 
 ## Future Goals
 - Have bot running indefinetly through docker container or hosted through AWS
