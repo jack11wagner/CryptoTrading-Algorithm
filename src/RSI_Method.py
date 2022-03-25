@@ -16,6 +16,7 @@ user, password, API_KEY, API_SECRET = os.getenv('USERNAME'), os.getenv('PASSWORD
 conn = mysql.connector.connect(user=user, password=password,
                                host='127.0.0.1', database='crypto_db')
 cursor = conn.cursor()
+cursor.execute("CREATE DATABASE IF NOT EXISTS crypto_db")
 engine = create_engine('mysql+pymysql://{}:{}@localhost/crypto_db'.format(user, password))
 
 client = Client(API_KEY, API_SECRET, tld='us')

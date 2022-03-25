@@ -16,6 +16,7 @@ user, password, API_KEY, API_SECRET = os.getenv('USERNAME'), os.getenv('PASSWORD
 conn = mysql.connector.connect(user=user, password=password,
                                host='127.0.0.1', database='crypto_db')
 cursor = conn.cursor()
+cursor.execute("CREATE DATABASE IF NOT EXISTS crypto_db")
 engine = create_engine('mysql+pymysql://{}:{}@localhost/crypto_db'.format(user, password))
 
 client = Client(API_KEY, API_SECRET, tld='us')
@@ -106,9 +107,9 @@ def on_message(ws, message):
         print('candle closed at {}'.format(float(close)))
 
         closes.append(float(close))
-        # # frame = loadCandleCloses(symbol, time, float(open), float(close), float(change))
-        # print(frame)
-        # frame.to_sql('CandleCloses', engine, if_exists='append', index=False)
+        frame = loadCandleCloses(symbol, time, float(open), float(close), float(change))
+        print(frame)
+        frame.to_sql('CandleCloses', engine, if_exists='append', index=False)
         if in_position:
             PERCENT_CHANGE = ((float(close)-POSITION_PRICE)/POSITION_PRICE)*100
             print(PERCENT_CHANGE)
@@ -134,7 +135,6 @@ def on_open(ws):
 
 def on_close(ws):
     print('closed connection')
-
 
 ws = websocket.WebSocketApp(SOCKET, on_open=on_open, on_close=on_close, on_message=on_message)
 
