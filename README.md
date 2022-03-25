@@ -9,6 +9,7 @@ Strategies include:
 + Top AltCoin Mover Stop Loss Method
 + Percentage Method
 
-**Make sure to activate your virtual environment before trying to download requirements.txt**
+## Developers 
+- Visit [docs/dev_resources.md] for more information on how to setup the necessary dependencies to run the program
 
 - Trying to figure out a way to keep bot running indefinetly on a raspberry pi
