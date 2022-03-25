@@ -15,9 +15,23 @@
 These steps below must be executed once after a developer clones the repo.  All commands should be run in the root
 folder (`CryptoTrading-Algorithm` unless it was renamed after cloning).
 
-1. **Create a virtual environment in the folder `.venv`**:  run `python3 -m venv .venv`
-2. **Activate the virtual environment**: `source .venv/bin/activiate`
-3. **Install dependencies**: `pip install -r requirements.txt`
+1. Create a virtual environment - `python3 -m venv .venv`
+3. Activate the virtual environment - `source .venv/bin/activiate`
+4. Install dependencies - `pip install -r requirements.txt`
+5. You will need mysql installed on your machine make sure you have your credentials
+6. Create binance.us account and create a new API KEY
+    - Go to [Binance Sign Up](https://accounts.binance.us/en/register) and create an account
+    - You will likely want to fund your account with some amount such as $100
+    - Once you have created your account hover over your profile in the upper right corner and go to API Management
+    - Once in API Management you will want to create an API Key and give it a label
+    - IMPORTANT: When you create your API KEY make sure to keep track of the API SECRET KEY as well, you will need both for the project to work
+7. Create a `.env` file with the following information  
+    - `USERNAME = <mysql username here>`
+    - `PASSWORD = <mysql password here>`
+    - `API_KEY = <binance  API_KEY here>`
+    - `API_SECRET_KEY = <binance API_SECRET_KEY here>`
+8. Run one of the crypto strategy python scripts using the virtual enviornment.
+   - `.venv/bin/python3 <python file to run>`
 
 ## Workflow - IDE
 
